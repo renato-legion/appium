@@ -4,7 +4,7 @@
 Feature: AppiumTest
 
 
-  Scenario: Demo App
+  Scenario: Demo App QA - JENKINS
     Given usuario abre la aplicacion
     When usuario realiza operaciones
     Then cierra la aplicacion
