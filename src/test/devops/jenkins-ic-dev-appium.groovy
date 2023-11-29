@@ -8,7 +8,9 @@ pipeline {
 
     tools { 
         maven 'Main Maven' 
-        jdk 'Android Studio Java Home' 
+        jdk 'Android Studio Java Home'
+        adb '/Users/t24453/Library/Android/sdk/platform-tools/adb'
+        appium '/usr/local/bin/appium'
     }
 
     stages {
