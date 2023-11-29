@@ -46,7 +46,7 @@ pipeline {
                                 echo "Restarting emulator"
                                 try {
                                     // Removed. Seems to crash emulator > -gpu swiftshader_indirect
-                                    sh "/usr/lib/android-sdk/emulator/emulator -skin 1440x2560 -ports ${env.emulator1},${env.emulator1+1} -avd x86_64_pixel_xl_api_32 -no-window -no-audio -no-snapshot-load -no-snapshot-save -accel off -wipe-data -no-boot-anim -memory 2048 -cache-size 1000 -partition-size 2048 -verbose"
+                                    sh "$ANDROID_HOME/tools/emulator -skin 1440x2560 -ports ${env.emulator1},${env.emulator1+1} -avd x86_64_pixel_xl_api_32 -no-window -no-audio -no-snapshot-load -no-snapshot-save -accel off -wipe-data -no-boot-anim -memory 2048 -cache-size 1000 -partition-size 2048 -verbose"
                                 } catch (Exception e) {
                                     echo 'Exception occurred: ' + e.toString()
                                 }
@@ -57,7 +57,7 @@ pipeline {
                 stage('Appium server startup') {
                     steps {
                         script {
-                            sh "/usr/local/bin/appium"
+                            sh "$APPIUM_HOME/appium"
                         }
                     }
                 }
@@ -68,12 +68,29 @@ pipeline {
                                 script {
                                     echo "Starting up emulator"
                                     def response = ""
-                                    while (response != "1") {
-                                        response = sh(script: "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1} wait-for-device shell getprop sys.boot_completed", returnStdout: true).trim()
-                                        echo "$ANDROID_HOME/platform-tools/adb shell getprop sys.boot_completed, response was: ${response}"
-                                        sleep(time: 60, unit: 'SECONDS')
-                                        echo "Waiting for emulator to finishing starting up"
+                                    def maxRetries = 20
+                                    def numberOfRetries = 0
+                                    try {
+                                        while (response != "1") {
+                                            if (numberOfRetries > maxRetries) {
+                                                break
+                                            }
+
+                                            response = sh(script: "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1} wait-for-device shell getprop sys.boot_completed", returnStdout: true).trim()
+                                            echo "$ANDROID_HOME/platform-tools/adb shell getprop sys.boot_completed, response was: ${response}"
+                                            sleep(time: 60, unit: 'SECONDS')
+                                            echo "Waiting for emulator to finishing starting up"
+                                        }
+                                    } catch (Exception e) {
+                                        echo 'Exception occurred: ' + e.toString()
+                                        numberOfRetries = numberOfRetries + 1
+                                        sleep(time: 120, unit: 'SECONDS')
                                     }
+
+                                    if (numberOfRetries > maxRetries) {
+                                        error("Build failed because emulator failed to start up correctly")
+                                    }
+
                                     sleep(time: 60, unit: 'SECONDS')
                                     echo "Emulator finished booting necessary services"
                                 }
