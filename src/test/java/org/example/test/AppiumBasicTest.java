@@ -2,13 +2,13 @@ package org.example.test;
 
 
 import io.appium.java_client.AppiumBy;
-import org.junit.Test;
 import org.openqa.selenium.By;
+import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
 
 
-public class AppiumBasic extends BaseTest {
+public class AppiumBasicTest extends BaseTest {
 
     @Test
     public void AppiumTest() throws MalformedURLException {

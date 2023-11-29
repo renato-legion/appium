@@ -23,7 +23,6 @@ public class StepsBasicFlow extends BaseTest {
         driver.findElement(AppiumBy.accessibilityId("Animation")).click();
         //Click en Xpath
         driver.findElement(By.xpath("//android.widget.TextView[@content-desc=\"3D Transition\"]")).click();
-
     }
 
     @Then("cierra la aplicacion")
