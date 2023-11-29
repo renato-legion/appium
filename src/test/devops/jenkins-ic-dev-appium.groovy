@@ -58,7 +58,7 @@ pipeline {
                 stage('Appium server startup') {
                     steps {
                         script {
-                            sh "/usr/local/bin/appium"
+                            sh "/Users/t24453/Library/Jenkins/appium"
                         }
                     }
                 }
