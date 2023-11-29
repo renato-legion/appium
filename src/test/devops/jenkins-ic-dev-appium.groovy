@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         emulator1 = 5556
-        avd1 = 'API_32_16cm_Pixel_7_Pro_UI_tests_enabled'
+        avd1 = 'x86_64_pixel_xl_api_32'
     }
 
     tools { 
