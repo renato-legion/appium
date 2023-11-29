@@ -117,7 +117,7 @@ pipeline {
                                     
                                     def appiumTestRun = sh(script: "mvn clean test -DPlatform=android", returnStdout: true)
                                     
-                                    sh "adb -s emulator-${emulator1} emu kill"
+                                    sh "$ANDROID_HOME/platform-tools/adb -s emulator-${emulator1} emu kill"
                                     
                                     if (appiumTestRun.contains("Tests run: ${numberOfTests}, Failures: 0, Errors: 0, Skipped: 0") == false) {
                                         error("Build failed because some tests failed, had errors or where skipped")
