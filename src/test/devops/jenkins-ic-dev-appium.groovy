@@ -6,6 +6,11 @@ pipeline {
         emulator1 = 5556
     }
 
+    tools { 
+        maven 'MAVEN_HOME' 
+        jdk 'JAVA_HOME' 
+    }
+
     stages {
         stage('SCM') {
             steps {
