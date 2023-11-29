@@ -57,7 +57,7 @@ pipeline {
                 stage('Appium server startup') {
                     steps {
                         script {
-                            sh "/usr/local/lib/node_modules/appium/index.js"
+                            sh "#!/bin/bash /usr/local/lib/node_modules/appium/index.js"
                         }
                     }
                 }
