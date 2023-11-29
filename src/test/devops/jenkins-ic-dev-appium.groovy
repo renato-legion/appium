@@ -7,7 +7,7 @@ pipeline {
     }
 
     tools { 
-        maven 'MAVEN_HOME' 
+        maven 'Main Maven' 
         jdk 'Android Studio Java Home' 
     }
 
