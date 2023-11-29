@@ -18,8 +18,7 @@ pipeline {
             steps {
                 script {
                     // This assembles a debug apk with the android UI test inside it
-                    sh "./gradlew clean"
-                    sh "./gradlew assembleDebug assembleDebugAndroidTest"
+                    sh "mvn clean compile"
                     // sh "./gradlew assembleDebug assembleDebugAndroidTest installDebug installDebugAndroidTest"
                 }
             }
