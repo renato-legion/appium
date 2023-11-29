@@ -59,24 +59,28 @@ pipeline {
                     stages {
                         stage('Emulator condition verification') {
                             steps {
-                                echo "Starting up emulator"
-                                def response = ""
-                                while (response != "1") {
-                                    response = sh(script: "adb -s emulator-${env.emulator1} wait-for-device shell getprop sys.boot_completed", returnStdout: true).trim()
-                                    echo "adb shell getprop sys.boot_completed, response was: ${response}"
+                                script {
+                                    echo "Starting up emulator"
+                                    def response = ""
+                                    while (response != "1") {
+                                        response = sh(script: "adb -s emulator-${env.emulator1} wait-for-device shell getprop sys.boot_completed", returnStdout: true).trim()
+                                        echo "adb shell getprop sys.boot_completed, response was: ${response}"
+                                        sleep(time: 60, unit: 'SECONDS')
+                                        echo "Waiting for emulator to finishing starting up"
+                                    }
                                     sleep(time: 60, unit: 'SECONDS')
-                                    echo "Waiting for emulator to finishing starting up"
+                                    echo "Emulator finished booting necessary services"
                                 }
-                                sleep(time: 60, unit: 'SECONDS') // https://linuxhint.com/jenkinsfile-sleep/
-                                echo "Emulator finished booting necessary services"
                             }
                         }
                         stage('Run UI tests') {
                             steps {
-                                echo "Beginning appium tests runs"
-                                def appiumTestRun = sh(script: "mvn clean test -DPlatform=android", returnStdout: true)
-                                echo "Appium tests completed"
-                                echo appiumTestRun
+                                script {
+                                    echo "Beginning appium tests runs"
+                                    def appiumTestRun = sh(script: "mvn clean test -DPlatform=android", returnStdout: true)
+                                    echo "Appium tests completed"
+                                    echo appiumTestRun
+                                }
                             }
                         }
                     }
