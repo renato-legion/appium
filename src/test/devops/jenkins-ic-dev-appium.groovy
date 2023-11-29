@@ -1,8 +1,10 @@
 pipeline {
 
-    def emulator1 = 5556
-
     agent any
+
+    environment {
+        emulator1 = 5556
+    }
 
     stages {
         stage('SCM') {
@@ -38,7 +40,7 @@ pipeline {
                                 echo "Restarting emulator"
                                 try {
                                     // Removed. Seems to crash emulator > -gpu swiftshader_indirect
-                                    sh "/usr/lib/android-sdk/emulator/emulator -skin 1440x2560 -ports ${emulator1},${emulator1+1} -avd x86_64_pixel_xl_api_32 -no-window -no-audio -no-snapshot-load -no-snapshot-save -accel off -wipe-data -no-boot-anim -memory 2048 -cache-size 1000 -partition-size 2048 -verbose"
+                                    sh "/usr/lib/android-sdk/emulator/emulator -skin 1440x2560 -ports ${env.emulator1},${env.emulator1+1} -avd x86_64_pixel_xl_api_32 -no-window -no-audio -no-snapshot-load -no-snapshot-save -accel off -wipe-data -no-boot-anim -memory 2048 -cache-size 1000 -partition-size 2048 -verbose"
                                 } catch (Exception e) {
                                     echo 'Exception occurred: ' + e.toString()
                                 }
@@ -60,7 +62,7 @@ pipeline {
                                 echo "Starting up emulator"
                                 def response = ""
                                 while (response != "1") {
-                                    response = sh(script: "adb -s emulator-${emulator1} wait-for-device shell getprop sys.boot_completed", returnStdout: true).trim()
+                                    response = sh(script: "adb -s emulator-${env.emulator1} wait-for-device shell getprop sys.boot_completed", returnStdout: true).trim()
                                     echo "adb shell getprop sys.boot_completed, response was: ${response}"
                                     sleep(time: 60, unit: 'SECONDS')
                                     echo "Waiting for emulator to finishing starting up"
