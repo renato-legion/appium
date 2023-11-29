@@ -47,7 +47,7 @@ pipeline {
                                 echo "Restarting emulator"
                                 try {
                                     // Removed. Seems to crash emulator > -gpu swiftshader_indirect
-                                    sh "$ANDROID_HOME/tools/emulator -skin 1440x2560 -ports ${env.emulator1},${env.emulator1+1} -avd ${env.avd1} -no-window -no-audio -no-snapshot-load -no-snapshot-save -accel off -wipe-data -no-boot-anim -memory 2048 -cache-size 1000 -partition-size 2048 -verbose"
+                                    sh "$ANDROID_HOME/tools/emulator -skin 1440x2560 -ports ${env.emulator1},${env.emulator1+1} -avd ${env.avd1} -no-window -no-audio -no-snapshot-load -no-snapshot-save -wipe-data -no-boot-anim -memory 2048 -cache-size 1000 -verbose"
                                 } catch (Exception e) {
                                     echo 'Exception occurred: ' + e.toString()
                                 }
