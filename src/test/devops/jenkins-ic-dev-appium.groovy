@@ -22,10 +22,8 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    sh 'export ANDROID_AVD_HOME=/Users/t24453/.android/avd'
-                    sh 'export ANDROID_HOME=/Users/t24453/Library/Android/sdk'
                     //appium '/usr/local/bin/appium'
-                    
+
                     // This assembles a debug apk with the android UI test inside it
                     sh "mvn clean compile"
                     // sh "./gradlew assembleDebug assembleDebugAndroidTest installDebug installDebugAndroidTest"
@@ -37,10 +35,10 @@ pipeline {
                 stage('Emulator startup') {
                     steps {
                         script {
-                            sh "adb kill-server"
-                            sh "adb start-server"
+                            sh "$ANDROID_HOME/platform-tools/adb kill-server"
+                            sh "$ANDROID_HOME/platform-tools/adb start-server"
 
-                            def adbDevicesResponse = sh(script: "adb devices", returnStdout: true)
+                            def adbDevicesResponse = sh(script: "$ANDROID_HOME/platform-tools/adb devices", returnStdout: true)
                             echo adbDevicesResponse
                             def currentActiveDevices = adbDevicesResponse.minus("List of devices attached")
                             echo currentActiveDevices
@@ -59,7 +57,7 @@ pipeline {
                 stage('Appium server startup') {
                     steps {
                         script {
-                            sh "appium"
+                            sh "/usr/local/bin/appium"
                         }
                     }
                 }
@@ -71,8 +69,8 @@ pipeline {
                                     echo "Starting up emulator"
                                     def response = ""
                                     while (response != "1") {
-                                        response = sh(script: "adb -s emulator-${env.emulator1} wait-for-device shell getprop sys.boot_completed", returnStdout: true).trim()
-                                        echo "adb shell getprop sys.boot_completed, response was: ${response}"
+                                        response = sh(script: "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1} wait-for-device shell getprop sys.boot_completed", returnStdout: true).trim()
+                                        echo "$ANDROID_HOME/platform-tools/adb shell getprop sys.boot_completed, response was: ${response}"
                                         sleep(time: 60, unit: 'SECONDS')
                                         echo "Waiting for emulator to finishing starting up"
                                     }
