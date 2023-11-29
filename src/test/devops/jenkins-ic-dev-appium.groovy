@@ -9,8 +9,6 @@ pipeline {
     tools { 
         maven 'Main Maven' 
         jdk 'Android Studio Java Home'
-        adb '/Users/t24453/Library/Android/sdk/platform-tools/adb'
-        appium '/usr/local/bin/appium'
     }
 
     stages {
@@ -21,9 +19,13 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build executables') {
+        stage('Build') {
             steps {
                 script {
+                    sh 'export ANDROID_AVD_HOME=/Users/t24453/.android/avd'
+                    sh 'export ANDROID_HOME=/Users/t24453/Library/Android/sdk'
+                    //appium '/usr/local/bin/appium'
+                    
                     // This assembles a debug apk with the android UI test inside it
                     sh "mvn clean compile"
                     // sh "./gradlew assembleDebug assembleDebugAndroidTest installDebug installDebugAndroidTest"
