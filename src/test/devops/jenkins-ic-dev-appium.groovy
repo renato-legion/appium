@@ -63,10 +63,7 @@ pipeline {
                     steps {
                         script {
                             try {
-                                sh """
-                                    #!/bin/bash --login -x
-                                    appium &
-                                """
+                                sh "/usr/local/bin/node /usr/local/lib/node_modules/appium/index.js"
                                 // sh "/Users/t24453/Library/Jenkins/appium"
                             } catch (Exception e) {
                                 echo 'Possibly false exception occurred: ' + e.toString()
