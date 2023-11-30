@@ -25,8 +25,6 @@ pipeline {
         stage('Build Tests') {
             steps {
                 script {
-                    //appium '/usr/local/bin/appium'
-
                     // This assembles a debug apk with the android UI test inside it
                     sh "mvn clean compile"
                     // sh "./gradlew assembleDebug assembleDebugAndroidTest installDebug installDebugAndroidTest"
@@ -65,7 +63,11 @@ pipeline {
                     steps {
                         script {
                             try {
-                                sh "/Users/t24453/Library/Jenkins/appium"
+                                sh """
+                                    #!/bin/bash --login -x
+                                    appium &
+                                """
+                                // sh "/Users/t24453/Library/Jenkins/appium"
                             } catch (Exception e) {
                                 echo 'Possibly false exception occurred: ' + e.toString()
                             }
