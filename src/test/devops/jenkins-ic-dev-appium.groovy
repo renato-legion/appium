@@ -119,8 +119,11 @@ pipeline {
                                     
                                     def appiumTestRun = sh(script: "mvn clean test -DPlatform=android", returnStdout: true)
                                     
+                                    echo "Shutting down Emulator"
                                     sh "$ANDROID_HOME/platform-tools/adb -s emulator-${emulator1} emu kill"
-                                    sh "kill \$(lsof -t -i :${env.APPIUM_PORT})"
+                                    
+                                    echo "Shutting down Appium"
+                                    sh "kill \$(ps -e | grep 'appium' | awk '{print \$1}')"
 
                                     
                                     if (appiumTestRun.contains("Tests run: ${numberOfTests}, Failures: 0, Errors: 0, Skipped: 0") == false) {
