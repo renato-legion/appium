@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     environment {
-        emulator1 = [5556, 5557]
+        emulator1 = [5556, 5557] as Int[]
         avd1 = 'x86_64_pixel_xl_api_32'
         numberOfTests = 1
         
