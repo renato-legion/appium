@@ -7,7 +7,7 @@ pipeline {
         avd1 = 'x86_64_pixel_xl_api_32'
         numberOfTests = 1
         
-        PATH = "/usr/local/Cellar/node/21.2.0/bin/node:${env.PATH}"
+        PATH = "/usr/local/Cellar/node/21.2.0/bin/:${env.PATH}"
     }
 
     tools { 
