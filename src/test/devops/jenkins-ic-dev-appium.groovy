@@ -138,7 +138,7 @@ pipeline {
                                             closeParallelServices()
                                         }
                                         echo "Appium tests completed"
-                                    } catch {
+                                    } catch (Exception e) {
                                         closeParallelServices()
                                         echo "Appium tests failed due to error"
                                     }
