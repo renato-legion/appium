@@ -15,6 +15,8 @@ pipeline {
         jdk 'Android Studio Java Home'
     }
 
+    options { timestamps () }
+
     stages {
         stage('SCM') {
             steps {
@@ -77,6 +79,7 @@ pipeline {
                         stage('Emulator condition verification') {
                             steps {
                                 script {
+                                    sleep(time: 180, unit: 'SECONDS')
                                     echo "Starting up emulator"
                                     def response = ""
                                     def maxRetries = 20
