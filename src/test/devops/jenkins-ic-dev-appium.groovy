@@ -3,7 +3,8 @@ pipeline {
     agent any
 
     environment {
-        emulator1 = [5556, 5557] as Int[]
+        emulator1portF = 5556
+        emulator1portR = 5557
         avd1 = 'x86_64_pixel_xl_api_32'
         numberOfTests = 1
         
@@ -53,7 +54,7 @@ pipeline {
                                 echo "Restarting emulator"
                                 try {
                                     // Removed. Seems to crash emulator > -gpu swiftshader_indirect
-                                    sh "$ANDROID_HOME/tools/emulator -skin 1440x3120 -ports ${env.emulator1[0]},${env.emulator1[1]} -avd ${env.avd1} -no-audio -no-snapshot-load -no-snapshot-save -wipe-data -no-boot-anim -memory 2048 -cache-size 1000 -verbose"
+                                    sh "$ANDROID_HOME/tools/emulator -skin 1440x3120 -ports ${env.emulator1portF},${env.emulator1portR} -avd ${env.avd1} -no-audio -no-snapshot-load -no-snapshot-save -wipe-data -no-boot-anim -memory 2048 -cache-size 1000 -verbose"
                                 } catch (Exception e) {
                                     echo 'Exception occurred: ' + e.toString()
                                 }
@@ -91,7 +92,7 @@ pipeline {
                                                 break
                                             }
 
-                                            response = sh(script: "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1[0]} wait-for-device shell getprop sys.boot_completed", returnStdout: true).trim()
+                                            response = sh(script: "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} wait-for-device shell getprop sys.boot_completed", returnStdout: true).trim()
                                             echo "adb shell getprop sys.boot_completed respond with: ${response}"
                                             sleep(time: 45, unit: 'SECONDS')
                                             echo "Waiting for emulator to finishing starting up"
@@ -120,13 +121,13 @@ pipeline {
                                     def appiumTestRun = sh(script: "mvn clean test -DPlatform=android", returnStdout: true)
                                     
                                     echo "Shutting down Emulator"
-                                    sh "$ANDROID_HOME/platform-tools/adb -s emulator-${emulator1[0]} emu kill"
+                                    sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
                                     
                                     echo "Shutting down Appium"
                                     sh "kill \$(ps -e | grep 'appium' | awk '{print \$1}')"
 
                                     
-                                    if (appiumTestRun.contains("Tests run: ${numberOfTests}, Failures: 0, Errors: 0, Skipped: 0") == false) {
+                                    if (appiumTestRun.contains("Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0") == false) {
                                         error("Build failed because some tests failed, had errors or where skipped")
                                     }
 
