@@ -67,7 +67,7 @@ pipeline {
                     steps {
                         script {
                             try {
-                                sh "node /usr/local/lib/node_modules/appium/index.js &"
+                                sh "node /usr/local/lib/node_modules/appium/index.js"
                             } catch (Exception e) {
                                 echo 'Possibly false exception occurred: ' + e.toString()
                             }
@@ -120,15 +120,20 @@ pipeline {
                                     
                                     def appiumTestRun = sh(script: "mvn clean test -DPlatform=android", returnStdout: true)
                                     
-                                    echo "Shutting down Emulator"
-                                    sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
-                                    
-                                    echo "Shutting down Appium"
-                                    sh "kill \$(ps -e | grep 'appium' | awk '{print \$1}')"
-
-                                    
                                     if (appiumTestRun.contains("Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0") == false) {
+                                        echo "Shutting down Emulator"
+                                        sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
+                                    
+                                        echo "Shutting down Appium"
+                                        sh "kill \$(ps -e | grep 'appium' | awk '{print \$1}')"
+
                                         error("Build failed because some tests failed, had errors or where skipped")
+                                    } else {
+                                        echo "Shutting down Emulator"
+                                        sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
+                                    
+                                        echo "Shutting down Appium"
+                                        sh "kill \$(ps -e | grep 'appium' | awk '{print \$1}')"
                                     }
 
                                     echo "Appium tests completed"
