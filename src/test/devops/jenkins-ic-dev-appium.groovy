@@ -8,6 +8,8 @@ pipeline {
         numberOfTests = 1
         
         PATH = "/usr/local/Cellar/node/21.2.0/bin/:${env.PATH}"
+        
+        APPIUM_PORT = 4023
     }
 
     tools { 
@@ -27,10 +29,8 @@ pipeline {
         stage('Build Tests') {
             steps {
                 script {
-                    echo "PATH is: ${env.PATH}"
                     // This assembles a debug apk with the android UI test inside it
                     sh "mvn clean compile"
-                    // sh "./gradlew assembleDebug assembleDebugAndroidTest installDebug installDebugAndroidTest"
                 }
             }
         }
@@ -120,6 +120,8 @@ pipeline {
                                     def appiumTestRun = sh(script: "mvn clean test -DPlatform=android", returnStdout: true)
                                     
                                     sh "$ANDROID_HOME/platform-tools/adb -s emulator-${emulator1} emu kill"
+                                    sh "kill \$(lsof -t -i :${env.APPIUM_PORT})"
+
                                     
                                     if (appiumTestRun.contains("Tests run: ${numberOfTests}, Failures: 0, Errors: 0, Skipped: 0") == false) {
                                         error("Build failed because some tests failed, had errors or where skipped")
