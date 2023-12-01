@@ -80,7 +80,6 @@ pipeline {
                         stage('Emulator condition verification') {
                             steps {
                                 script {
-                                    sleep(time: 180, unit: 'SECONDS')
                                     echo "Starting up emulator"
                                     def response = ""
                                     def maxRetries = 20
@@ -120,8 +119,11 @@ pipeline {
                                     
                                     def appiumTestRun = sh(script: "mvn clean test -DPlatform=android", returnStdout: true)
                                     
-                                    if (appiumTestRun.contains("Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0") == false) {
+                                    // should you use appium from a server not run by jenkins check: "Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0"
+                                    // else
+                                    if (appiumTestRun.contains("OK (${env.numberOfTests} test)" == false)) {
                                         echo "Shutting down Emulator"
+                                        sh "$ANDROID_HOME/platform-tools/adb kill-server"
                                         sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
                                     
                                         echo "Shutting down Appium"
@@ -130,6 +132,7 @@ pipeline {
                                         error("Build failed because some tests failed, had errors or where skipped")
                                     } else {
                                         echo "Shutting down Emulator"
+                                        sh "$ANDROID_HOME/platform-tools/adb kill-server"
                                         sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
                                     
                                         echo "Shutting down Appium"
