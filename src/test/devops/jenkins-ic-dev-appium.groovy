@@ -66,7 +66,7 @@ pipeline {
                     steps {
                         script {
                             try {
-                                sh "node /usr/local/lib/node_modules/appium/index.js"
+                                sh "node /usr/local/lib/node_modules/appium/index.js &"
                             } catch (Exception e) {
                                 echo 'Possibly false exception occurred: ' + e.toString()
                             }
