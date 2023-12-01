@@ -1,3 +1,12 @@
+def closeParallelServices() {
+    echo "Shutting down Emulator"
+    sh "$ANDROID_HOME/platform-tools/adb kill-server"
+    sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
+
+    echo "Shutting down Appium"
+    sh "kill \$(ps -e | grep 'appium' | awk '{print \$1}')"
+}
+
 pipeline {
 
     agent any
@@ -117,29 +126,22 @@ pipeline {
                                 script {
                                     echo "Beginning appium tests runs"
                                     
-                                    def appiumTestRun = sh(script: "mvn clean test -DPlatform=android", returnStdout: true)
+                                    try {
+                                        def appiumTestRun = sh(script: "mvn clean test -DPlatform=android", returnStdout: true)
                                     
-                                    // should you use appium from a server not run by jenkins check: "Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0"
-                                    // else
-                                    if (appiumTestRun.contains("OK (${env.numberOfTests} test)") == false) {
-                                        echo "Shutting down Emulator"
-                                        sh "$ANDROID_HOME/platform-tools/adb kill-server"
-                                        sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
-                                    
-                                        echo "Shutting down Appium"
-                                        sh "kill \$(ps -e | grep 'appium' | awk '{print \$1}')"
-
-                                        error("Build failed because some tests failed, had errors or where skipped")
-                                    } else {
-                                        echo "Shutting down Emulator"
-                                        sh "$ANDROID_HOME/platform-tools/adb kill-server"
-                                        sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
-                                    
-                                        echo "Shutting down Appium"
-                                        sh "kill \$(ps -e | grep 'appium' | awk '{print \$1}')"
+                                        // should you use appium from a server not run by jenkins check: "Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0"
+                                        // else
+                                        if (appiumTestRun.contains("Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0") == false) {
+                                            closeParallelServices()
+                                            error("Build failed because some tests failed, had errors or where skipped")
+                                        } else {
+                                            closeParallelServices()
+                                        }
+                                        echo "Appium tests completed"
+                                    } catch {
+                                        closeParallelServices()
+                                        echo "Appium tests failed due to error"
                                     }
-
-                                    echo "Appium tests completed"
                                 }
                             }
                         }
