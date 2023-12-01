@@ -6,6 +6,8 @@ pipeline {
         emulator1 = 5556
         avd1 = 'x86_64_pixel_xl_api_32'
         numberOfTests = 1
+        
+        PATH = "/usr/local/Cellar/node/21.2.0/bin/node:${env.PATH}"
     }
 
     tools { 
@@ -25,6 +27,7 @@ pipeline {
         stage('Build Tests') {
             steps {
                 script {
+                    echo "PATH is: ${env.PATH}"
                     // This assembles a debug apk with the android UI test inside it
                     sh "mvn clean compile"
                     // sh "./gradlew assembleDebug assembleDebugAndroidTest installDebug installDebugAndroidTest"
@@ -63,7 +66,7 @@ pipeline {
                     steps {
                         script {
                             try {
-                                sh "$NODE_HOME/node /usr/local/lib/node_modules/appium/index.js"
+                                sh "node /usr/local/lib/node_modules/appium/index.js"
                                 // sh "/Users/t24453/Library/Jenkins/appium"
                             } catch (Exception e) {
                                 echo 'Possibly false exception occurred: ' + e.toString()
