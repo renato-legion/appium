@@ -1,12 +1,3 @@
-def closeParallelServices() {
-    echo "Shutting down Emulator"
-    sh "$ANDROID_HOME/platform-tools/adb kill-server"
-    sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
-
-    echo "Shutting down Appium"
-    sh "kill \$(ps -e | grep 'appium' | awk '{print \$1}')"
-}
-
 pipeline {
 
     agent any
@@ -124,6 +115,15 @@ pipeline {
                         stage('Run UI tests') {
                             steps {
                                 script {
+                                    def closeParallelServices() {
+                                        echo "Shutting down Emulator"
+                                        sh "$ANDROID_HOME/platform-tools/adb kill-server"
+                                        sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
+
+                                        echo "Shutting down Appium"
+                                        sh "kill \$(ps -e | grep 'appium' | awk '{print \$1}')"
+                                    }
+
                                     echo "Beginning appium tests runs"
                                     
                                     try {
