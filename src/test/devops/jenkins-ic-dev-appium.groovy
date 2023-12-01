@@ -121,7 +121,7 @@ pipeline {
                                     
                                     // should you use appium from a server not run by jenkins check: "Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0"
                                     // else
-                                    if (appiumTestRun.contains("OK (${env.numberOfTests} test)" == false)) {
+                                    if (appiumTestRun.contains("OK (${env.numberOfTests} test)") == false) {
                                         echo "Shutting down Emulator"
                                         sh "$ANDROID_HOME/platform-tools/adb kill-server"
                                         sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
