@@ -7,9 +7,7 @@ pipeline {
         avd1 = 'x86_64_pixel_xl_api_32'
         numberOfTests = 1
         
-        PATH = "/usr/local/Cellar/node/21.2.0/bin/:${env.PATH}"
-        
-        APPIUM_PORT = 4023
+        PATH = "/usr/local/Cellar/node/21.2.0/bin/:${env.PATH}"        
     }
 
     tools { 
@@ -67,7 +65,6 @@ pipeline {
                         script {
                             try {
                                 sh "node /usr/local/lib/node_modules/appium/index.js"
-                                // sh "/Users/t24453/Library/Jenkins/appium"
                             } catch (Exception e) {
                                 echo 'Possibly false exception occurred: ' + e.toString()
                             }
@@ -84,22 +81,22 @@ pipeline {
                                     def response = ""
                                     def maxRetries = 20
                                     def numberOfRetries = 0
-                                    
-                                    try {
-                                        while (response != "1") {
+
+                                    while (response != "1") {
+                                        try {
                                             if (numberOfRetries > maxRetries) {
                                                 break
                                             }
 
                                             response = sh(script: "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1} wait-for-device shell getprop sys.boot_completed", returnStdout: true).trim()
                                             echo "adb shell getprop sys.boot_completed respond with: ${response}"
-                                            sleep(time: 60, unit: 'SECONDS')
+                                            sleep(time: 45, unit: 'SECONDS')
                                             echo "Waiting for emulator to finishing starting up"
+                                        } catch (Exception e) {
+                                            echo 'Exception occurred: ' + e.toString()
+                                            numberOfRetries = numberOfRetries + 1
+                                            sleep(time: 45, unit: 'SECONDS')
                                         }
-                                    } catch (Exception e) {
-                                        echo 'Exception occurred: ' + e.toString()
-                                        numberOfRetries = numberOfRetries + 1
-                                        sleep(time: 60, unit: 'SECONDS')
                                     }
 
                                     if (numberOfRetries > maxRetries) {
