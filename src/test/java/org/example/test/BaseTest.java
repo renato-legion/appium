@@ -7,8 +7,12 @@ import io.appium.java_client.service.local.AppiumServiceBuilder;
 import org.openqa.selenium.Capabilities;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 
 public class BaseTest {
 
@@ -16,22 +20,27 @@ public class BaseTest {
     public  AppiumDriverLocalService service;
 
     public void  ConfigureAppium() throws MalformedURLException {
-         service = new AppiumServiceBuilder().withAppiumJS(
-            new File("//usr//local//lib//node_modules/appium//build//lib//main.js")
+        try (InputStream input = new FileInputStream("src/test/resources/config.properties")) {
+            Properties prop = new Properties();
+            // load a properties file
+            prop.load(input);
+
+            service = new AppiumServiceBuilder().withAppiumJS(
+                new File(prop.getProperty("APPIUM_LOCATION"))
             )
             .withIPAddress("127.0.0.1")
             .usingPort(4723)
             .build();
+            service.start();
 
-        service.start();
-
-        UiAutomator2Options options = new UiAutomator2Options();
-        options.setDeviceName("emulator-5554");
-        options.setApp("/Users/t24453/Desktop/Projects/QA/appium/src/test/resources/ApiDemos-debug.apk");
-        driver = new AndroidDriver(new URL("http://127.0.0.1:4723"), (Capabilities) options);
-
+            UiAutomator2Options options = new UiAutomator2Options();
+            options.setDeviceName("emulator-5554");
+            options.setApp(prop.getProperty("APK_LOCATION"));
+            driver = new AndroidDriver(new URL("http://127.0.0.1:4723"), (Capabilities) options);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
-
 
     public void tearDown() {
         driver.quit();
