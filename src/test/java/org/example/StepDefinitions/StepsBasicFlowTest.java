@@ -5,18 +5,20 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import net.serenitybdd.screenplay.waits.WaitUntil;
 import org.example.test.BaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 
+
 import java.net.MalformedURLException;
 
-public class StepsBasicFlow extends BaseTest {
+public class StepsBasicFlowTest extends BaseTest {
+
     @Given("usuario abre la aplicacion")
     public void usuarioAbreLaAplicacion() throws MalformedURLException {
         ConfigureAppium();
     }
+
 
     @When("usuario realiza operaciones")
     public void usuarioRealizaOperaciones() {
@@ -46,6 +48,7 @@ public class StepsBasicFlow extends BaseTest {
         driver.findElement(By.id("io.appium.android.apis:id/long_notify")).click();
     }
 
+
     @Then("la app te muestra una notificacion")
     public void laAppTeMuestraUnaNotificacion() {
         Assert.assertEquals( driver.findElement(By.xpath(" //android.widget.Toast[@text=\"This is a long notification. See, you might need a second more to read it.\"]")).getText(),"This is a long notification. See, you might need a second more to read it.");
@@ -63,8 +66,9 @@ public class StepsBasicFlow extends BaseTest {
         driver.findElement(AppiumBy.accessibilityId("Play Audio from Resources")).click();
     }
 
+
     @Then("la app reproduce el audio")
-    public void laAppReproduceElAudio() throws InterruptedException {
+    public void laAppReproduceElAudio() {
         Assert.assertEquals( driver.findElement(By.xpath( "//android.widget.TextView[@text=\"Playing audio...\"]")).getText(),"Playing audio...");
         tearDown();
     }

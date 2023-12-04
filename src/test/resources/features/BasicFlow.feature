@@ -3,14 +3,14 @@
 @PacoTeamQA
 Feature: AppiumTest
 
-
+  @Test
   @Regresion @Transicion3D
   Scenario: Mostrar transicion 3D
     Given usuario abre la aplicacion
     When usuario realiza operaciones
     Then cierra la aplicacion
 
-
+  @Test
   @Regresion @NotificacionTextoLargo
   Scenario: Mostrar notificacion con texto largo
     Given usuario abre la aplicacion
@@ -18,6 +18,7 @@ Feature: AppiumTest
     When clickea mostrar notoficacion larga
     Then la app te muestra una notificacion
 
+  @Test
   @Regresion @ReproducirAudioDesdeRecursos
   Scenario: Reproducir un audio desde los recursos del proyecto
     Given usuario abre la aplicacion
