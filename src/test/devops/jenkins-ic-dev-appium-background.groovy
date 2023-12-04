@@ -67,7 +67,7 @@ pipeline {
                     steps {
                         script {
                             try {
-                                sh "node /usr/local/lib/node_modules/appium/index.js"
+                                sh "node /usr/local/lib/node_modules/appium/index.js &"
                                 echo "Appium server startup - Started on background"
                             } catch (Exception e) {
                                 echo 'Appium server startup - Exception occurred: ' + e.toString()
@@ -83,7 +83,7 @@ pipeline {
                                 script {
                                     echo "Starting up emulator"
                                     def response = ""
-                                    def maxRetries = 20
+                                    def maxRetries = 10
                                     def numberOfRetries = 0
 
                                     while (response != "1") {
@@ -107,7 +107,7 @@ pipeline {
                                         error("Build failed because emulator failed to start up correctly")
                                     }
 
-                                    sleep(time: 60, unit: 'SECONDS')
+                                    sleep(time: 30, unit: 'SECONDS')
                                     echo "Emulator finished booting necessary services"
                                 }
                             }
@@ -125,17 +125,36 @@ pipeline {
                                     echo "Run UI tests - Beginning appium tests runs"
                                     
                                     try {
-                                        def appiumTestRun = sh(script: "mvn clean test -DPlatform=android", returnStdout: true)
-                                    
-                                        // should you use appium from a server not run by jenkins check: "Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0"
-                                        // else
-                                        if (appiumTestRun.contains("Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0") == false) {
-                                            closeParallelServices()
-                                            error("Run UI tests - Build failed because some tests failed, had errors or where skipped")
+                                        sh "mvn clean test -DPlatform=android"
+
+                                        def maxRetries = 10
+                                        def numberOfRetries = 0
+                                        def testRunFileExists = fileExists '/target/surefire-reports/TestSuite.txt'
+                                        
+                                        while (numberOfRetries < maxRetries) {
+                                            if (testRunFileExists) {
+                                                break
+                                            } else {
+                                                numberOfRetries = numberOfRetries + 1
+                                                echo "Run UI tests - Checking for  ${numberOfRetries}"
+                                                sleep(time: 45, unit: 'SECONDS')
+                                            }
+                                            testRunFileExists = fileExists '/target/surefire-reports/TestSuite.txt'
+                                        }
+                                        
+                                        if (testRunFileExists) {
+                                            def testRunResult = sh(script: "cat /target/surefire-reports/TestSuite.txt", returnStdout: true)
+                                            if (testRunResult.contains("Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0")) {
+                                                closeParallelServices()
+                                                echo "Run UI tests - Appium tests were successfully completed"
+                                            } else {
+                                                closeParallelServices()
+                                                error("Run UI tests - Build failed because some tests failed, had errors or where skipped")
+                                            }
                                         } else {
                                             closeParallelServices()
+                                            error("Run UI tests - Build failed because tests report was never generated.")
                                         }
-                                        echo "Run UI tests - Appium tests completed"
                                     } catch (Exception e) {
                                         closeParallelServices()
                                         echo "Run UI tests - Appium tests failed due to error"
