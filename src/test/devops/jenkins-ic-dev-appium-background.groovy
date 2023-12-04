@@ -125,11 +125,13 @@ pipeline {
                                     echo "Run UI tests - Beginning appium tests runs"
                                     
                                     try {
-                                        sh "mvn clean test -DPlatform=android"
+                                        sh "mvn test -DPlatform=android"
 
                                         def maxRetries = 10
                                         def numberOfRetries = 0
-                                        def testRunFileExists = fileExists '/target/surefire-reports/TestSuite.txt'
+                                        def sureFireReportFileLocation = "${WORKSPACE}/target/surefire-reports/TestSuite.txt"
+                                        echo sureFireReportFileLocation
+                                        def testRunFileExists = fileExists sureFireReportFileLocation
                                         
                                         while (numberOfRetries < maxRetries) {
                                             if (testRunFileExists) {
@@ -139,11 +141,11 @@ pipeline {
                                                 echo "Run UI tests - Checking for  ${numberOfRetries}"
                                                 sleep(time: 45, unit: 'SECONDS')
                                             }
-                                            testRunFileExists = fileExists '/target/surefire-reports/TestSuite.txt'
+                                            testRunFileExists = fileExists sureFireReportFileLocation
                                         }
                                         
                                         if (testRunFileExists) {
-                                            def testRunResult = sh(script: "cat /target/surefire-reports/TestSuite.txt", returnStdout: true)
+                                            def testRunResult = sh(script: "cat ${sureFireReportFileLocation}", returnStdout: true)
                                             if (testRunResult.contains("Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0")) {
                                                 closeParallelServices()
                                                 echo "Run UI tests - Appium tests were successfully completed"
