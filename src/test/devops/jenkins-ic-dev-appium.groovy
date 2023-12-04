@@ -51,12 +51,12 @@ pipeline {
                             echo currentActiveDevices
                             
                             if (currentActiveDevices.isEmpty() || currentActiveDevices.trim().isEmpty()) {
-                                echo "Restarting emulator"
+                                echo "Emulator startup - Restarting emulator"
                                 try {
                                     // Removed. Seems to crash emulator > -gpu swiftshader_indirect
                                     sh "$ANDROID_HOME/tools/emulator -skin 1440x3120 -ports ${env.emulator1portF},${env.emulator1portR} -avd ${env.avd1} -no-audio -no-snapshot-load -no-snapshot-save -wipe-data -no-boot-anim -memory 2048 -cache-size 1000 -verbose"
                                 } catch (Exception e) {
-                                    echo 'Exception occurred: ' + e.toString()
+                                    echo 'Emulator startup - Exception occurred: ' + e.toString()
                                 }
                             }
                          }
@@ -67,9 +67,10 @@ pipeline {
                     steps {
                         script {
                             try {
-                                sh "node /usr/local/lib/node_modules/appium/index.js"
+                                sh "node /usr/local/lib/node_modules/appium/index.js &"
+                                echo "Appium server startup - Started on background"
                             } catch (Exception e) {
-                                echo 'Possibly false exception occurred: ' + e.toString()
+                                echo 'Appium server startup - Exception occurred: ' + e.toString()
                             }
                         }
                     }
@@ -116,15 +117,12 @@ pipeline {
                             steps {
                                 script {
                                     def closeParallelServices = {
-                                        echo "Shutting down Emulator"
+                                        echo "Run UI tests - Shutting down Emulator"
                                         sh "$ANDROID_HOME/platform-tools/adb kill-server"
                                         sh "$ANDROID_HOME/platform-tools/adb -s emulator-${env.emulator1portF} emu kill"
-
-                                        echo "Shutting down Appium"
-                                        sh "kill \$(ps -e | grep 'appium' | awk '{print \$1}')"
                                     }
 
-                                    echo "Beginning appium tests runs"
+                                    echo "Run UI tests - Beginning appium tests runs"
                                     
                                     try {
                                         def appiumTestRun = sh(script: "mvn clean test -DPlatform=android", returnStdout: true)
@@ -133,14 +131,14 @@ pipeline {
                                         // else
                                         if (appiumTestRun.contains("Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0") == false) {
                                             closeParallelServices()
-                                            error("Build failed because some tests failed, had errors or where skipped")
+                                            error("Run UI tests - Build failed because some tests failed, had errors or where skipped")
                                         } else {
                                             closeParallelServices()
                                         }
-                                        echo "Appium tests completed"
+                                        echo "Run UI tests - Appium tests completed"
                                     } catch (Exception e) {
                                         closeParallelServices()
-                                        echo "Appium tests failed due to error"
+                                        echo "Run UI tests - Appium tests failed due to error"
                                     }
                                 }
                             }
