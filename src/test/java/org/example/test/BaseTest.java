@@ -4,7 +4,10 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
+
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.OutputType;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 public class BaseTest {
@@ -41,6 +45,14 @@ public class BaseTest {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void takeScreenshot(Boolean isCorrect) throws IOException {
+        File srcFile = driver.getScreenshotAs(OutputType.FILE);
+        String timeStamp = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new java.util.Date());
+        String screenshotType = isCorrect ? "1" : "0";
+        File targetFile = new File("target/screenshots/" + timeStamp + screenshotType + ".jpg");
+        FileUtils.copyFile(srcFile,targetFile);
     }
 
     public void tearDown() {

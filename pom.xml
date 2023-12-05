@@ -152,13 +152,6 @@
             </includes>
             <testFailureIgnore>true</testFailureIgnore>
           </configuration>
-          <!-- 
-          <configuration>
-            <suiteXmlFiles>
-              <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
-            </suiteXmlFiles>
-          </configuration>
-          -->
         </plugin>
 
         <plugin>
