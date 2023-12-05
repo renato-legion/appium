@@ -22,14 +22,14 @@ public class StepsBasicFlowTest extends BaseTest {
     public void usuarioRealizaOperaciones() throws InterruptedException, IOException {
         //CLICK EN "VIEWS"
         driver.findElement(AppiumBy.accessibilityId("Views")).click();
-        Thread.sleep(500);
+        Thread.sleep(250);
         takeScreenshot(true);
         //Click en "animations"
         driver.findElement(AppiumBy.accessibilityId("Animation")).click();
-        Thread.sleep(500);
+        Thread.sleep(250);
         //Click en Xpath
         driver.findElement(By.xpath("//android.widget.TextView[@content-desc=\"3D Transition\"]")).click();
-        Thread.sleep(500);
+        Thread.sleep(250);
         takeScreenshot(true);
 
     }
@@ -42,13 +42,13 @@ public class StepsBasicFlowTest extends BaseTest {
     @And("usuario se dirige a Notificacion con texto")
     public void usuarioSeDirigeANotificacionConTexto() throws InterruptedException, IOException {
         driver.findElement(AppiumBy.accessibilityId("App")).click();
-        Thread.sleep(500);
+        Thread.sleep(250);
         takeScreenshot(true);
         driver.findElement(AppiumBy.accessibilityId("Notification")).click();
-        Thread.sleep(500);
+        Thread.sleep(250);
         takeScreenshot(true);
         driver.findElement(AppiumBy.accessibilityId("NotifyWithText")).click();
-        Thread.sleep(500);
+        Thread.sleep(250);
         takeScreenshot(true);
     }
 
@@ -68,7 +68,7 @@ public class StepsBasicFlowTest extends BaseTest {
     @And("usuario abre Contenido")
     public void usuarioAbreMediaPLayer() throws InterruptedException, IOException {
         driver.findElement(AppiumBy.accessibilityId("Content")).click();
-        Thread.sleep(500);
+        Thread.sleep(250);
         takeScreenshot(true);
         driver.findElement(AppiumBy.accessibilityId("Assets")).click();
         takeScreenshot(true);
@@ -76,7 +76,7 @@ public class StepsBasicFlowTest extends BaseTest {
 
     @When("clickea sobre leer asset")
     public void clickeaSobreAudioDesdeRecursos() throws InterruptedException, IOException {
-        Thread.sleep(500);
+        Thread.sleep(250);
         driver.findElement(AppiumBy.accessibilityId("Read Asset")).click();
         takeScreenshot(true);
     }
@@ -84,11 +84,11 @@ public class StepsBasicFlowTest extends BaseTest {
 
     @Then("la app muestra contenido de lectura")
     public void laAppReproduceElAudio() throws InterruptedException, IOException {
-        Thread.sleep(500);
+        Thread.sleep(250);
         Assert.assertEquals( driver.findElement(By.id("io.appium.android.apis:id/text")).getText(),"This text is stored in a raw Asset.\n" +
                 "\n" +
                 "It was read and placed into the TextView here.\n");
-        Thread.sleep(500);
+        Thread.sleep(250);
         takeScreenshot(true);
         tearDown();
     }
