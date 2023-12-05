@@ -127,22 +127,9 @@ pipeline {
                                     try {
                                         sh "mvn test -DPlatform=android"
 
-                                        def maxRetries = 10
-                                        def numberOfRetries = 0
-                                        def sureFireReportFileLocation = "${WORKSPACE}/target/surefire-reports/TestSuite.txt"
+                                        def sureFireReportFileLocation = "${WORKSPACE}/target/surefire-reports/org.example.runner.RunnerTest.txt"
                                         echo sureFireReportFileLocation
                                         def testRunFileExists = fileExists sureFireReportFileLocation
-                                        
-                                        while (numberOfRetries < maxRetries) {
-                                            if (testRunFileExists) {
-                                                break
-                                            } else {
-                                                numberOfRetries = numberOfRetries + 1
-                                                echo "Run UI tests - Checking for  ${numberOfRetries}"
-                                                sleep(time: 45, unit: 'SECONDS')
-                                            }
-                                            testRunFileExists = fileExists sureFireReportFileLocation
-                                        }
                                         
                                         if (testRunFileExists) {
                                             def testRunResult = sh(script: "cat ${sureFireReportFileLocation}", returnStdout: true)
