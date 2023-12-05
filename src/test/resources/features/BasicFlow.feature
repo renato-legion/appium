@@ -19,9 +19,9 @@ Feature: AppiumTest
     Then la app te muestra una notificacion
 
   @Test
-  @Regresion @ReproducirAudioDesdeRecursos
+  @Regresion @LeerAssetenAPP
   Scenario: Reproducir un audio desde los recursos del proyecto
     Given usuario abre la aplicacion
-    And usuario abre MediaPLayer
-    When clickea sobre audio desde recursos
-    Then la app reproduce el audio
+    And usuario abre Contenido
+    When clickea sobre leer asset
+    Then la app muestra contenido de lectura

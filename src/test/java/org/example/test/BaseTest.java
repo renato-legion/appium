@@ -18,10 +18,11 @@ public class BaseTest {
 
     public AndroidDriver driver;
     public  AppiumDriverLocalService service;
+    public Properties prop = new Properties();
 
     public void  ConfigureAppium() throws MalformedURLException {
         try (InputStream input = new FileInputStream("src/test/resources/config.properties")) {
-            Properties prop = new Properties();
+
             // load a properties file
             prop.load(input);
 
