@@ -134,6 +134,7 @@ pipeline {
                                         if (testRunFileExists) {
                                             def testRunResult = sh(script: "cat ${sureFireReportFileLocation}", returnStdout: true)
                                             if (testRunResult.contains("Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0")) {
+                                                archiveArtifacts artifacts: sureFireReportFileLocation
                                                 closeParallelServices()
                                                 echo "Run UI tests - Appium tests were successfully completed"
                                             } else {
