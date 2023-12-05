@@ -6,7 +6,7 @@ pipeline {
         emulator1portF = 5556
         emulator1portR = 5557
         avd1 = 'x86_64_pixel_xl_api_32'
-        numberOfTests = 1
+        numberOfTests = 3
         
         PATH = "/usr/local/Cellar/node/21.2.0/bin/:${env.PATH}"        
     }

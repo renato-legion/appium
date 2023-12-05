@@ -6,10 +6,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = {"classpath:features/BasicFlow.feature"},
-        glue = {"org.example.StepDefinitions"})
-
-public class RunnerTest {
-
-
-}
+        features = { "classpath:features/BasicFlow.feature" },
+        glue = { "org.example.StepDefinitions" }
+)
+public class RunnerTest {}
