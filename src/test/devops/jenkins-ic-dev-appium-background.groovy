@@ -8,7 +8,7 @@ pipeline {
         avd1 = 'x86_64_pixel_xl_api_32'
         numberOfTests = 1
         
-        PATH = "/usr/local/Cellar/node/21.2.0/bin/:${env.PATH}"        
+        PATH = "/usr/local/Cellar/node/21.2.0/bin/:${env.PATH}"
     }
 
     tools { 
@@ -151,7 +151,7 @@ pipeline {
                                                 echo "Run UI tests - Appium tests were successfully completed"
                                             } else {
                                                 closeParallelServices()
-                                                error("Run UI tests - Build failed because some tests failed, had errors or where skipped")
+                                                error("Run UI tests - Build failed because some tests failed, had errors or where skipped.")
                                             }
                                         } else {
                                             closeParallelServices()
@@ -159,7 +159,8 @@ pipeline {
                                         }
                                     } catch (Exception e) {
                                         closeParallelServices()
-                                        echo "Run UI tests - Appium tests failed due to error"
+                                        echo 'Exception occurred: ' + e.toString()
+                                        error("Run UI tests - Appium tests failed due to an unknown exception revise logs.")
                                     }
                                 }
                             }
