@@ -132,7 +132,7 @@ pipeline {
                                         def testRunFileExists = fileExists sureFireReportFileLocation
                                         
                                         if (testRunFileExists) {
-                                            archiveArtifacts artifacts: sureFireReportFileLocation
+                                            archiveArtifacts artifacts: "target/surefire-reports/org.example.runner.RunnerTest.txt"
                                             def testRunResult = sh(script: "cat ${sureFireReportFileLocation}", returnStdout: true)
                                             if (testRunResult.contains("Tests run: ${env.numberOfTests}, Failures: 0, Errors: 0, Skipped: 0")) {
                                                 closeParallelServices()
